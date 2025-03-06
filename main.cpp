@@ -17,7 +17,7 @@ What we need:
 4. Need a product container (array, maybe linked list)
 5. Check the number of shifts
 6. On last shift, split the product (the elements need to be filled in their respective array or list)
-7. Finally subtract complemeent of second operand to the last
+7. Finally subtract complemeent of second operand to R
 */
 // Global Variables
 int shiftCount = 0;
