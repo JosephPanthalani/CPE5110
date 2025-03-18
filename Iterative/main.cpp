@@ -9,6 +9,7 @@ int binaryToDecimal(string& binary);
 int mult(int x, int y);
 string decimalToBinary(long long decimal,int n);
 string addBinaries(string num1,string num2);
+string binaryToHexadecimal(string binary);
 int main() {
     string a;
     string b;
@@ -85,7 +86,8 @@ int main() {
     while (finalAnswer.length()<sum1.length()){
         finalAnswer="0"+finalAnswer;
     }
-    cout<<"FINAL SUM: "<<finalAnswer<<endl;
+    cout<<"FINAL SUM IN BINARY: "<<finalAnswer<<endl;
+    cout<<"FINAL SUM IN HEXADECIMAL: "<<binaryToHexadecimal(finalAnswer)<<endl;
 
     return 0;
 }
@@ -135,23 +137,27 @@ string addBinaries(string num1, string num2) {
     result = result.substr(result.find('1')); 
 
     return result;
-
-
-
-
-
-
-
-
-
-    // //int maxSize = max(num1.length(), num2.length()) + 1; // +1 to account for the carry bit
-	// bitset<32> bin1(num1);
-	// bitset<32> bin2(num2);
-	// cout << bin1 << " and " << bin2 << endl;
-	// cout << typeid(bin1).name() << endl;
-	// // Add together
-	// cout << "bin 1: " << bin1.to_ulong() << endl;
-	// cout << "bin 2: " << bin2.to_ulong() << endl;
-	// cout << "sum: " << bin1.to_ulong() + bin2.to_ulong() << endl;
-    // return to_string(bin1.to_ulong()+bin2.to_ulong());
+}
+string binaryToHexadecimal(string binary) {
+    string hexadecimal = "";
+    for (int i = 0; i < binary.length(); i += 4) {
+        string nibble = binary.substr(i, 4);
+        if (nibble == "0000") hexadecimal += "0";
+        else if (nibble == "0001") hexadecimal += "1";
+        else if (nibble == "0010") hexadecimal += "2";
+        else if (nibble == "0011") hexadecimal += "3";
+        else if (nibble == "0100") hexadecimal += "4";
+        else if (nibble == "0101") hexadecimal += "5";
+        else if (nibble == "0110") hexadecimal += "6";
+        else if (nibble == "0111") hexadecimal += "7";
+        else if (nibble == "1000") hexadecimal += "8";
+        else if (nibble == "1001") hexadecimal += "9";
+        else if (nibble == "1010") hexadecimal += "A";
+        else if (nibble == "1011") hexadecimal += "B";
+        else if (nibble == "1100") hexadecimal += "C";
+        else if (nibble == "1101") hexadecimal += "D";
+        else if (nibble == "1110") hexadecimal += "E";
+        else if (nibble == "1111") hexadecimal += "F";
+    }
+    return hexadecimal;
 }
