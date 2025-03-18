@@ -81,8 +81,11 @@ int main() {
     // for(int i=0;i<n/2;i++){
     //     sum2=sum2+"0";
     // }
-    
-    cout<<"FINAL SUM: "<<addBinaries(sum1,sum2)<<endl;
+    string finalAnswer=addBinaries(sum1,sum2);
+    while (finalAnswer.length()<sum1.length()){
+        finalAnswer="0"+finalAnswer;
+    }
+    cout<<"FINAL SUM: "<<finalAnswer<<endl;
 
     return 0;
 }
