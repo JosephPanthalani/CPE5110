@@ -77,8 +77,7 @@ int main() {
     string sum1=ac+bd;
     //We shift left the length of bd. For each shift left we add 3 delta t
     executionTime+=bd.length()*3;
-    //Since we also add ac + bd we have to add the carry select adder delay -> Sum = 10 delta t + ((n-4)/4) * 2 delta t. N should just be the length of inputs
-    executionTime+=10+((inputLength-4)/4)*2;
+    //We don't add carry select adder delay here because 2^n(ac)+bd just counts as a concatenation, not an addition
     cout<<"SUM1: "<<sum1<<endl;
     //sum2 represents 2^n/2 (ad+bc)
     
