@@ -19,10 +19,13 @@ int main() {
     string word2;
     string input1;
     string input2;
+    int executionTime=0;
+    cout<<"Enter Binary Input 1: "<<endl;
     cin>>input1;
+    cout<<"Enter Binary Input 2: "<<endl;
     cin>>input2;
     
-    //Add zeroes at the end because 4x4 multiplier as building block
+    //Add zeroes at the end because 4x4 multiplier as building block. Stop when it is multiple of 4 
     while(input1.length()!=4 && input1.length()!=8 && input1.length()!=12 && input1.length()!=16){
         cout<<"INPUT1: "<<input1.length();
         input1="0"+input1;
@@ -31,20 +34,25 @@ int main() {
         cout<<"INPUT2: "<<input2.length();
         input2="0"+input2;
     }
- 
+    //To get a,b,c,d we just divide both inputs in half
     a=input1.substr(0,input1.length()/2);
     b=input1.substr(input1.length()/2,input1.length());
     c=input2.substr(0,input2.length()/2);
     d=input2.substr(input2.length()/2,input2.length());
+
     int binaryLength=input1.length() *2;
     int inputLength=input1.length();
     cout<<"a: "<<a<<"\n "<<"b: "<<b<<" \n"<<"c: "<<c<<" \n"<<"d: "<<d<<endl;
-    //8 is the number of bits the binary number will have. We know this because a and c are 4 bits each.
     
+    //Each of these 4 multiplications costs 21 delta t according to our 4 buildling blocks of 4x4 multiplier units
     string ac=decimalToBinary(mult(binaryToDecimal(a),binaryToDecimal(c)),inputLength);
+    executionTime+=21;
     string bd=decimalToBinary(mult(binaryToDecimal(b),binaryToDecimal(d)),inputLength);
+    executionTime+=21;
     string ad=decimalToBinary(mult(binaryToDecimal(a),binaryToDecimal(d)),inputLength);
+    executionTime+=21;
     string bc=decimalToBinary(mult(binaryToDecimal(b),binaryToDecimal(c)),inputLength);
+    executionTime+=21;
     
     
     while(ac.length()<inputLength){
@@ -65,29 +73,38 @@ int main() {
     cout<<"B*C = "<<bc<<endl;
     
     int n=binaryLength;
-    //I think we can just concatenate the ac and bd strings here. sum1 represents 2^n(ac)+bd
+    //We can just concatenate the ac and bd strings here. sum1 represents 2^n(ac)+bd
     string sum1=ac+bd;
+    //We shift left the length of bd. For each shift left we add 3 delta t
+    executionTime+=bd.length()*3;
+    //Since we also add ac + bd we have to add the carry select adder delay -> Sum = 10 delta t + ((n-4)/4) * 2 delta t. N should just be the length of inputs
+    executionTime+=10+((inputLength-4)/4)*2;
     cout<<"SUM1: "<<sum1<<endl;
     //sum2 represents 2^n/2 (ad+bc)
     
-    //might need to change binaryLength/2 later
-    //string sum2=decimalToBinary(stoll(addBinaries(ad,bc)),binaryLength/2);
+    
+    
     string sum2=addBinaries(ad,bc);
+    //Add carry select adder delay again
+    executionTime+=10+((inputLength-4)/4)*2;
     
     //2^n/2(ad+bc)
     for(int i=0;i<inputLength/2;i++){
         sum2=sum2+"0";
     }
+    //Shift left n/2 times. Each shift add 3 delta t again
+    executionTime+=inputLength/2*3;
     cout<<"SUM2: "<<sum2<<endl;
-    // for(int i=0;i<n/2;i++){
-    //     sum2=sum2+"0";
-    // }
+
     string finalAnswer=addBinaries(sum1,sum2);
+    //Add carry select adder delay again
+    executionTime+=10+((inputLength-4)/4)*2;
     while (finalAnswer.length()<sum1.length()){
         finalAnswer="0"+finalAnswer;
     }
     cout<<"FINAL SUM IN BINARY: "<<finalAnswer<<endl;
     cout<<"FINAL SUM IN HEXADECIMAL: "<<binaryToHexadecimal(finalAnswer)<<endl;
+    cout<<"Execution time: "<<executionTime<<" delta t"<<endl;
 
     return 0;
 }
@@ -97,11 +114,7 @@ string decimalToBinary(long long decimal,int n){
         result += (decimal & (1LL << i)) ? '1' : '0';
     }
     return result;
-    // for(int i=0;i<n;i++){
-    //     binary=to_string(decimal%2)+binary;
-    //     decimal=decimal/2;
-    // }
-    // return binary;
+
 }
 int binaryToDecimal(string& binary){
     int decimal=0;
