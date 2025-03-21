@@ -30,7 +30,7 @@ int main() {
         cout<<"INPUT1: "<<input1.length();
         input1="0"+input1;
     }
-    while(input2.length()!=4 && input2.length()<8 && input2.length()<12 && input2.length()<16){
+    while(input2.length()!=4 && input2.length()!=8 && input2.length()!=12 && input2.length()!=16){
         cout<<"INPUT2: "<<input2.length();
         input2="0"+input2;
     }
