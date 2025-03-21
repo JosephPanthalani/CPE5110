@@ -1,87 +1,64 @@
-// Simulate the add-and-shift mulitiplication scheme
-// Review the bitset class 03/05
+//Final modification to add-and-shift algorithm
+
 #include <iostream>
 #include <bitset>
 #include <string>
 #include <vector>
 
 using namespace std;
+// Declare all the binary numbers as unsigned.
+unsigned int decA, decB, product, A;
 
-// Function to convert a binary string to an integer
-unsigned int binaryToDecimal(const string &binary) {
-    return stoi(binary, nullptr, 2);
+int carrySelectEquation(int n) {
+	int executionTime = (10+((n-4)/4)*2); //time to execution addition operation
+    return executionTime;  
 }
-
-// Function to validate binary input (between 4 to 16 bits)
-bool isValidBinary(const string &binary) {
-    if (binary.length() < 4 || binary.length() > 16) {
-        return false;
-    }
-    for (char c : binary) {
-        if (c != '0' && c != '1') return false;
-    }
-    return true;
+unsigned int binToDec(const string &binary) {
+    return bitset<16>(binary).to_ulong(); // binary to decimal
 }
-
-// Function to perform Add-and-Shift Multiplication
-void addAndShiftMultiplication(string multiplicand, string multiplier) {
-    unsigned int A = binaryToDecimal(multiplicand);  // Convert binary to decimal
-    unsigned int B = binaryToDecimal(multiplier);
-    unsigned int product = 0;  // Initialize product to 0
-    unsigned int shiftedA = A; // Store the shifting version of A
-
-    cout << "\nStep-by-Step Add-and-Shift Multiplication:\n";
-    cout << "---------------------------------------------\n";
-    cout << "Multiplicand (A) = " << multiplicand << " (" << A << ")\n";
-    cout << "Multiplier (B)   = " << multiplier << " (" << B << ")\n";
-    cout << "---------------------------------------------\n";
-
-    int bitCount = multiplier.length(); // Get the number of bits in B
-    vector<string> partialProducts;  // Store partial product results
-
-    // Perform bitwise multiplication
-    for (int i = 0; i < bitCount; i++) {
-        cout << "Step " << i + 1 << ": ";
-        
-        if (B & 1) {  // Check if LSB of B is 1
-            product += shiftedA; // Add the multiplicand to the product
-            cout << "Add " << bitset<16>(shiftedA) << " -> ";
+// Function to perform Add-and-Shift Multiplication and compute execution time
+void addAndShiftMultiplication(string op1, string op2) {
+	int delay = 0;  // execution time in terms of delta t
+    decA = binToDec(op1);  // Convert binary to decimal (actally converts string to unsigned long 16 bit binary) 
+    decB = binToDec(op2);  // Convert binary to decimal
+    product = 0;  
+    A = decA; // Store the adjusted value of A. Should shift the same amount of times as bit size of multiplier.   
+    // Add and shift or just shift
+    for (int i = 0; i < op2.length(); i++) {
+    	// Track the bit of b
+        if (decB%2 == 1) {  // if the last bit of b is 1 (to represent Qn)
+            product += A; // Add the multiplicand to the product
+            cout << "A: " << bitset<16>(A) << endl; // display A
+            int length = op2.length();
+            delay += carrySelectEquation(length); // Addition delay
         } else {
-            cout << "No Add -> ";
+        	cout << "Shift A" << endl;
+        	cout << "A: " << bitset<16>(A) << endl; // display A
+            //ncout << "Shift Right -> ";
         }
-
-        partialProducts.push_back(bitset<16>(product).to_string()); // Store partial sum
-        cout << "Partial Product: " << bitset<16>(product) << endl;
-
-        B >>= 1; // Shift the multiplier right
-        shiftedA <<= 1; // Shift the multiplicand left
+        delay += 3; // increment execution time
+        cout << "Adjusted A + Current Product: " << bitset<16>(product) << endl << endl;
+        decB >>= 1; // shift the bit under condition
+        A <<= 1; // shift A 
     }
-
-    cout << "---------------------------------------------\n";
-    cout << "Final Product: " << bitset<16>(product) << " (" << product << ")\n";
+    cout << endl << endl << endl;
+    cout << "Product: " << bitset<16>(product) << " in hex: " << hex << product << endl;
+    cout << "Total Execution Time: " << dec << delay << " delta t" << endl;
 }
 
 int main() {
-    string multiplicand, multiplier;
-
-    // Input the multiplicand
-    cout << "Enter the binary multiplicand (4-16 bits): ";
-    cin >> multiplicand;
-    while (!isValidBinary(multiplicand)) {
-        cout << "Invalid input. Enter a binary number (4-16 bits): ";
+	char option;
+    do {
+    	string multiplicand;
+        cout << "Enter the multiplicand: " << endl;
         cin >> multiplicand;
-    }
-
-    // Input the multiplier
-    cout << "Enter the binary multiplier (4-16 bits): ";
-    cin >> multiplier;
-    while (!isValidBinary(multiplier)) {
-        cout << "Invalid input. Enter a binary number (4-16 bits): ";
+        string multiplier;
+        cout << "Enter the multiplier: ";
         cin >> multiplier;
-    }
-
-    // Perform multiplication using add-and-shift method
-    addAndShiftMultiplication(multiplicand, multiplier);
-
+        addAndShiftMultiplication(multiplicand, multiplier);
+        
+        cout << "Would you like to enter another set of operands? (y/n): ";
+        cin >> option;
+    } while (option == 'y' || option == 'Y');
     return 0;
 }
