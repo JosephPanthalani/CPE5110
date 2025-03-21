@@ -24,7 +24,7 @@ void addAndShiftMultiplication(string op1, string op2) {
     // Add and shift or just shift
     for (int i = 0; i < op2.length(); i++) {
     	// Track the bit of b
-        if (decB%2 == 1) {  // if the last bit of b is 1 (to represent Qn)
+        if (decB%2 == 1) {  // if the last bit of b is 1 (similar to Qn)
             product += A; // Add the multiplicand to the product
             cout << "A: " << bitset<16>(A) << endl; // display A
             int length = op2.length();
